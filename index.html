@@ -1,0 +1,622 @@
+<html>
+<head>
+	<meta charset='UTF-8'>
+	<link type='text/css' rel='stylesheet' href='style.css'/>
+</head>
+<body>
+<nav>
+  <header>
+    <h1>About Linux Kernel Bugs</h1>
+  </header>
+  <div><a class="nav-link" href="#entry_4">Entry 4: Getting email right</a></div>
+  <div><a class="nav-link" href="#entry_3">Entry 3: Reproducing syzkaller crashes with automation in mind</a></div>
+  <div><a class="nav-link" href="#entry_2">Entry 2: Provoke a Kernel Panic</a></div>
+  <div><a class="nav-link" href="#entry_1">Entry 1: Provoke an Oops in a kernel module</a></div>
+  <div><a class="nav-link" href="#entry_0">Entry 0: Introduction</a></div>
+</nav>
+<main>
+  <section class="main-section" id="entry_4">
+    <header>
+      <h1>Entry 4: Getting email right</h1>
+      <strong>Friday, 23 April 2021</strong>
+    </header>
+    <p>
+    It is important that you get the email part of working as a Linux kernel
+    developer right. There is virtually no way one can work using a web based
+    client to interact with the Linux kernel developer community. It will be
+    very difficult to find a service of that kind, that allows to send
+    plain-text mail from within their web clients.
+    </p><p>
+    Even if you are using an email client programme, this is no guarantee that
+    your mail will reach the destination in the form you intended. I had to
+    learn this the hard way.
+    </p><p>
+    I used to use protonmail.com to send my patches. I no longer do. When I
+    sent out my first patch that contained a line that was longer than 80
+    columns, or so, the protonmail smtp service then separated the line into
+    two. Luckily enough, I sent the patch to syzkaller and so hopefully only
+    annoyed a computer. See here: you can see my desperate attempts to test
+    a patch until, after the 4th time, I give up and send it in via a new
+    email-address:
+    <a href='https://syzkaller.appspot.com/bug?id=777ed876dab1fec23f5793fcbeecbaa8f276773d'
+       target='_blank'>https://syzkaller.appspot.com/bug?id=777ed876dab1fec23f5793fcbeecbaa8f276773d</a>.
+    It took me almost 24 hours to fix this problem. And not only that. I had
+    everything default to my protonmail address. This leaves me with a mess and
+    still more work to do.
+    </p><p>
+    I can only advice everyone who, not forced by their employer, to use a
+    gmail account or something that behaves like one and git-send-email. Use:
+    <code>
+$ git send-email --help
+    </code>
+    and scroll down to 'EXAMPLES'. Right after that it says: 'Use gmail as the
+    smtp server'. Go with it. Further down it explains how to set it all up.
+    </p><p>
+    I used to use thunderbird to retrieve my mail and send out other mail that
+    didn't go through git-send-email. This always required me to copy paste
+    things from a terminal running vim to thunderbird and vice versa. I stopped
+    using thunderbird, too. I'm so used to the way vim works that I use it
+    whenever I can. It makes me very frustrated when I want to change things in
+    other editors and, completely enshrouded by the thoughts at hand, typing
+    away my vim commands, end up with an unreadable line of code, realizing I'm
+    not using vim. You know what comes here, had I written it out.
+    </p><p>
+    I put together a few scripts. They use fetchmail and msmtp. I feel there is
+    no harm in sharing them, too; If you want to make me a better Linux kernel
+    developer and you have tips for me, feel free to share them with me. I
+    would appreciate it very much, indeed.
+    </p><p>
+    However, the scripts aren't finished by any means. There is a lot still to
+    be done. But it seems to be enough for now, and whence there is more time I
+    will make those scripts more useful.
+    </p><p>
+    Do:
+    <code>
+git clone https://github.com/fuzzybritches0/postman
+    </code>
+    and follow the instructions in the README. Maybe it's helpful to you, too.
+    Visit: <a href='https://github.com/fuzzybritches0/postman'
+	      target='_blank'>https://github.com/fuzzybritches0/postman</a>
+    </p>
+  </section>
+  <section class="main-section" id="entry_3">
+    <header>
+      <h1>Entry 3: Reproducing syzkaller crashes with automation in mind</h1>
+      <strong>Thursday, 22 April 2021</strong>
+    </header>
+    <p>
+    Some crashes I reproduced turned out to share the same .config. Since
+    automating this only requires writing a few lines and some testing and the
+    fact that the most powerful CPU I own has a thermal design power of 15W and
+    the future prospect of having to compile these immensely large kernels 
+    multiple times, I decided it to be a good idea to invest that time and
+    effort to go smart about it. Or, at least, that's what I think I'm doing.
+    </p><p>
+    ############ SETUP ############
+    </p>
+    <code>
+# Let's make sure we are on the same page here, first. Just in case...
+# (Yes, this is all Debian/GNU Linux-based.)
+
+$ sudo apt update
+
+$ sudo apt install  build-essential git cscope libncurses-dev libssl-dev \
+	bison flex git-email wget libelf-dev bc rsync kmod cpio pkgconf \
+	devscripts dwarves vim codespell gdb golang qemu-system-x86 \
+	colorized-logs
+
+$ git clone https://github.com/fuzzybritches0/syzrep.git
+
+$ cd syzrep
+
+$ mkdir linux
+
+$ cd linux
+
+$ git clone git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+
+$ cd ..
+
+$ mkdir bugs
+
+$ wget -O ./files/stretch.img https://storage.googleapis.com/syzkaller/stretch.img
+
+$ wget -O ./files/stretch.img.key https://storage.googleapis.com/syzkaller/stretch.img.key
+    </code>
+<p>
+    Follow the instructions to build the syzkaller helper binaries at:
+    <a href='https://github.com/google/syzkaller/blob/master/docs/executing_syzkaller_programs.md'
+       target='_blank'>https://github.com/google/syzkaller/blob/master/docs/executing_syzkaller_programs.md</a>
+    </p><p>
+    Then place the binaries in the ./files folder. They are called syz-execprog
+    and syz-executor. There will be NO need to manually upload them later. Just
+    ignore that part in the instructions mentioned before. I've put that line
+    right into the scripts.
+    </p><p>
+    ############ USAGE ############
+    </p>
+    <code>
+$ cp -R ./files/template './bugs/TITLE-OF-SYZKALLER_BUG'
+
+$ cd './bugs/TITLE-OF-SYZKALLER_BUG'
+    </code>
+    <p>
+    change file syzrep.rc accordingly:
+    </p>
+    <strong>filename: syzrep.rc</strong>
+    <code>
+01 # Title of syzkaller bug
+02 #https://syzkaller.appspot.com/bug?id=
+03 #Reported-by: syzbot+xxxxxxxxxxxxxxxxxxxx@syzkaller.appspotmail.com
+04
+05 KCONFIG_HASH="yyyyyyyyyyyyyyyy"
+06 REPRODUCER_HASH="xxxxxxxxxxxxxx"
+    </code>
+    <p>
+    For the two values in line 5 and 6, you can find the hashes in the Crashes
+    roster in the columns labelled 'Config' and 'Syz repro'.
+    </p><p>
+    They look like this:<br>
+    https://syzkaller.appspot.com/text?tag=KernelConfig&x=yyyyyyyyyyyyyyyy
+    https://syzkaller.appspot.com/text?tag=ReproSyz&x=xxxxxxxxxxxxxx
+    </p><p>
+    So, what you have to do is fill out those two hashes and fill out line 1, 2
+    and 3, also, so you can look them up again on 
+    <a href='https://syzkaller.appspot.com/upstream'
+       target='_blank'>https://syzkaller.appspot.com/upstream</a>.
+    </p><p>
+    Additionally, it will be very likely, that you will have to adopt the file
+    get_report.sh. Automatic retrieval of the crash report is not guaranteed,
+    if you don't adopt the file. Have a look at filter_report(). It's trivial.
+    With the 
+    <p></p>
+    Finally run: 
+    <code>
+$ ./auto.sh
+    </code>
+    </p><p>
+    After that all has happened, it is time to get to the real work and find a
+    solution for the reported crash, which is not what we are going to talk
+    about here; in this entry. But I want to point out a few things I
+    discovered by testing out these little scripts and getting a little more
+    acquainted with the 'make' programme and the process of compiling the
+    Linux kernel:
+    </p><p>
+    After compiling the kernel and then applying your changes, it is often not
+    necessary to recompile the whole kernel all over. All the stuff that hasn't
+    changed is still lying around and waiting to be picked up to go into the
+    next kernel build. It will only recompile the module you changed. As far as
+    I have understood it, there is virtually no need to do a 'make clean' at
+    all. This leaves us with the following procedure after every subsequent
+    change we make and testing of our solutions:
+    </p>
+    <code>
+# If you are not in the respective symbolically linked Linux source folder:
+
+$ cd ./linux
+
+# then, of course...
+
+$ make
+
+# If you have more then one CPU core to spare, use the -j flag followed by the
+# number of CPU cores you want in helping compiling. (But you knew that
+# already!)
+
+$ cd ..
+
+$ ./get_report.sh
+
+# Now, if the reproducer no longer triggers, at one point, you want to shut
+# down qemu like so:
+
+$ ./ssh.sh systemctl poweroff
+# This always worked for me, as far as I can remember.
+    </code>
+    <p>
+    Most of the scripts' contents come from these following sources. I am not
+    claiming authorship. It gave me the opportunity to document my progress,
+    however.
+    </p>
+    <strong>Sources:</strong><br>
+    <a href='https://github.com/google/syzkaller/blob/master/docs/syzbot.md'
+       target='_blank'>https://github.com/google/syzkaller/blob/master/docs/syzbot.md
+    </a><br>
+    <a href='https://github.com/google/syzkaller/blob/master/docs/executing_syzkaller_programs.md'
+       target='_blank'>https://github.com/google/syzkaller/blob/master/docs/executing_syzkaller_programs.md
+    </a>
+    <a href='https://github.com/fuzzybritches0/syzrep'
+       target='_blank'>https://github.com/fuzzybritches0/syzrep
+    </a>
+    </p>
+  </section>
+  <section class="main-section" id="entry_2">
+    <header>
+      <h1>Entry 2: Provoke a Kernel Panic</h1>
+      <strong>Wednesday, 21 April 2021</strong>
+    </header>
+    <p>
+    You'll find a short snippet of code at the end of this entry. It shows you
+    the spot in the kernel source where I've put a line that will cause the
+    kernel panic. Modify your kernel source accordingly so you can reproduce
+    the panic. The file in question is: linux/init/main.c. Then, after
+    compilation, boot it with qemu and have the output go to stdout.
+    </p><p>
+    <code>
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0002) - not-present page
+PGD 0 P4D 0
+Oops: 0002 [#1] SMP NOPTI
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.11.2-broken-init+ #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/    01/2014
+RIP: 0010:kernel_init_freeable+0x1fd/0x257
+...
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
+Kernel Offset: disabled
+---[ end Kernel panic - not syncing: Attempted to kill init!                exitcode=0x00000009 ]---
+    </code>
+    <br>
+    When we debugged the module in the last entry, we read an address from a
+    special file in sysfs. When we debug an Oops or Panic in the kernel, we
+    need to use the System.map file to get our result. We do:
+    <code>
+$ cat System.map | grep kernel_init_freeable
+ffffffff82c04120 t kernel_init_freeable
+    </code>
+    Why? Because of that line (the REGISTER for the INSTRUCTION POINTER):
+    <code>
+RIP: 0010:kernel_init_freeable+0x1fd/0x257
+    </code>
+    <br>
+    We'll use gdb again to pin down the line in the code that caused the Oops.
+    <code>
+$ gdb vmlinux
+...
+Reading symbols from vmlinux...
+    </code>
+    <br>
+We then do:
+    <code>
+(gdb) disassemble kernel_init_freeable
+
+01 Dump of assembler code for function kernel_init_freeable:
+02    0xffffffff82c04120 <+0>:  call   0xffffffff81060980 <__fentry__>
+03    0xffffffff82c04125 <+5>:  push   %r13
+04    0xffffffff82c04127 <+7>:  mov    $0xffffffff82ca68e0,%rdi
+05    0xffffffff82c0412e <+14>: push   %r12
+06    0xffffffff82c04130 <+16>: push   %rbp
+07    0xffffffff82c04131 <+17>: push   %rbx
+....
+    </code>
+    <br>
+    We calculate the offset from the beginning of the function to the Oops
+    instruction:
+    <code>
+$ echo 'obase=16;ibase=16;FFFFFFFF82c04120+1FD' | bc
+
+FFFFFFFF82C0431D
+    </code>
+    <br>
+    We can find this entry on the second page:
+    <code>
+0xffffffff82c0431d <+509>:      movl   $0x0,0x0
+    </code>
+    When we select q to quit the disassembled output and then do:
+    <code>
+(gdb) list *0xffffffff82c0431d
+0xffffffff82c0431d is in kernel_init_freeable (init/main.c:1333).
+1328            driver_init();
+1329            init_irq_proc();
+1330            do_ctors();
+1331            usermodehelper_enable();
+1332            do_initcalls();
+1333            *(int *)0 = 0; //Add this line to cause a kernel PANIC
+1334    }
+1335
+1336    static void __init do_pre_smp_initcalls(void)
+1337    {
+(gdb)
+    </code>
+    <br>
+    We find again the line in the code that caused the Oops, in line 1333, as
+    expected.
+    </p>
+    <p>
+    <strong>Sources:</strong><br>
+    <a href='https://www.opensourceforu.com/2011/01/understanding-a-kernel-oops/'
+       target='_blank'>https://www.opensourceforu.com/2011/01/understanding-a-kernel-oops/
+    </a><br>
+    <a href='https://sanjeev1sharma.wordpress.com/tag/debug-kernel-panics/'
+       target='_blank'>https://sanjeev1sharma.wordpress.com/tag/debug-kernel-panics/
+    </a><br>
+    <a href='https://appuals.com/hex-calculator/'
+       target='_blank'> https://appuals.com/hex-calculator/
+    </a>
+    </p>
+  </section>
+  <section class="main-section" id="entry_1">
+    <header>
+      <h1>Entry 1: Provoke an Oops in a kernel module</h1>
+      <strong>Tuesday, 20 April 2021</strong>
+    </header>
+    <p>
+    When working with interpreted programming languages, it is common that
+    if there is a problem with the code and the execution halts, the
+    interpreter usually gives some information about what line of the source
+    the interpreter worked on.
+    </p><p>
+    It's not that easy with compiled programming languages. In this case, one
+    has to find a way to backtrace a register address to it's proper location
+    in the source of the programme. This is only possible if the source is
+    available. In the case of Linux, this is true.
+    </p><p>
+    Below are two files. Place them in a folder of your choice. Compile a
+    Linux kernel and then compile this module against that kernel by doing the
+    following:
+    <code>
+# inside the folder where the two files are, do:
+$ KERNELSOURCE=/to/your/kernel/build make
+    </code>
+    <br>
+    <strong>filename: badmodule.c</strong>
+    <code>
+01 // SPDX-License-Identifier: GPL-2.0-only
+02
+03 #include <linux/kernel.h>
+04 #include <linux/module.h>
+05 #include <linux/init.h>
+06
+07 static void create_oops(void) {
+08      *(int *)0 = 0;
+09 }
+10
+11 int __init initm(void)
+12 {
+13      printk("oops from the badmodule\n");
+14      create_oops();
+15      return 0;
+16 }
+17
+18 void __exit exitm(void)
+19 {
+20      pr_debug("Goodbye World\n");
+21 }
+22
+23 module_init(initm);
+24 module_exit(exitm);
+25
+26 MODULE_LICENSE("GPL");
+27 MODULE_AUTHOR("Bad Module Author");
+28 MODULE_DESCRIPTION("This is a bad module which will oops");
+    </code>
+<br>
+    <strong>filename: Makefile</strong>
+    <code>
+01 obj-m += badmodule.o
+02
+03 all:
+04	make -C $(shell echo ${KERNELSOURCE}) M=$(shell pwd) modules
+05
+06 clean:
+07	make -C $(shell echo ${KERNELSOURCE}) M=$(shell pwd) clean 
+    </code>
+    <br>
+    I suggest you load the kernel using qemu and then load the module you just
+    compiled. Upon loading the module dmesg will have the following report:
+    <code>
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0002) - not-present page
+PGD 0 P4D 0
+Oops: 0002 [#1] SMP PTI
+CPU: 0 PID: 399 Comm: modprobe Tainted: G           OE     5.11.2-qemu-1-amd64 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+RIP: 0010:init_module+0x13/0x1000 [badmodule]
+Code: Unable to access opcode bytes at RIP 0xffffffffc067bfe9.
+RSP: 0018:ffffaf274074fdf8 EFLAGS: 00010246
+...
+Killed
+    </code>
+    <br>
+    Now, this was not fatal to the system. The module we build, however, is
+    gone. We expect this report to point us to the line in the code that made
+    this happen. It should be line 8, right? Well, if we inspect the report we
+    can't see a line number or anything representing a line number. What we can
+    see, though, is the following line:
+    <code>
+RIP: 0010:init_module+0x13/0x1000 [badmodule]
+    </code>
+    <br>
+    This tells us that the problem occurred at hex address 0x13 and offset
+    0x1000. Because it is a module we need another offset, too, one that
+    tells us the offset of the module itself in memory. For this we do:
+    <code>
+$ sudo cat /sys/module/badmodule/sections/.init.text
+0xffffffffc067c000
+    </code>
+    <br>
+    We obtain a value in hex: 0xffffffffc067c000 which we will use together
+    with gdb momentarily.
+    <br>
+    Next, we load the failing module into gdb with,
+    <code>
+$ gdb badmodule.ko
+    </code>
+    and we are being greeted with a welcome screen and,
+    <code>
+Reading symbols from badmodule.ko...
+(gdb)
+    </code>
+we do now by typing and use the hex address we obtained before:
+    <code>
+(gdb) add-symbol-file badmodule.o 0xffffffffc067c000
+
+add symbol table from file "badmodule.o" at
+        .text_addr = 0xffffffffc067c000
+(y or n) y
+Reading symbols from badmodule.o...
+
+(gdb) disassemble init_module
+
+01 Dump of assembler code for function initm:
+02   0x000000000000004c <+0>:   call   0x51 <initm+5>
+03   0x0000000000000051 <+5>:   mov    $0x0,%rdi
+04   0x0000000000000058 <+12>:  call   0x5d <initm+17>
+05   0x000000000000005d <+17>:  xor    %eax,%eax
+06   0x000000000000005f <+19>:  movl   $0x0,0x0
+07   0x000000000000006a <+30>:  ret
+08 End of assembler dump.
+    </code>
+    <br>
+    Next we are advised to find the offset in that function that actually
+    caused the Oops so we can pin down the instruction in the source file.
+    The first address is in line 2 with: 0x000000000000004c, Recalling the
+    RIP line:
+    <code>
+    RIP: 0010:init_module+0x13/0x1000 [badmodule]
+    </code>
+    We assume the first hex number 0x13 is the offset. This leaves us with the
+    following arithmetic problem:
+    4c+13=?<br>
+    doing,
+    <code>
+echo 'obase=16;ibase=16;4C+13' | bc
+    </code>
+    we are left with the answer of: 5F. And there it is in line 06
+    <code>
+06   0x000000000000005f <+19>:  movl   $0x0,0x0
+    </code>
+    To finally obtain the line that caused the Oops, we type:
+    <code>
+(gdb) list *0x5f
+    </code>
+     and get:
+    <code>
+0x5f is in initm (/home/curtm/Documents/linux-kernel-mentees/week01/LINUX-KERNEL-DEBUGGING/badmodule.c:8).
+3       #include <linux/kernel.h>
+4       #include <linux/module.h>
+5       #include <linux/init.h>
+6
+7       static void create_oops(void) {
+8               *(int *)0 = 0;
+9       }
+10
+11      int __init initm(void)
+12      {
+    </code>
+    <br>
+    And there we are! It points us directly to the offending line. Great!
+    </p>
+    <p>
+    <strong>Sources:</strong><br>
+    <a href='https://www.opensourceforu.com/2011/01/understanding-a-kernel-oops/'
+       target='_blank'>https://www.opensourceforu.com/2011/01/understanding-a-kernel-oops/
+    </a><br>
+    <a href='https://sanjeev1sharma.wordpress.com/tag/debug-kernel-panics/'
+       target='_blank'>https://sanjeev1sharma.wordpress.com/tag/debug-kernel-panics/
+    </a><br>
+    <a href='https://appuals.com/hex-calculator/'
+       target='_blank'> https://appuals.com/hex-calculator/
+    </a>
+    </p>
+  </section>
+  <section class="main-section" id="entry_0">
+    <header>
+      <h1>Entry 0: Introduction</h1>
+      <strong>Monday, 19 April 2021</strong>
+    </header>
+    <p>
+    I heard of Linux, for the first time, in around 1995.
+    </p><p>
+    I had no idea what to do with the internet at that time and I certainly
+    didn't have access to it. But I read a few computer magazines and
+    occasionally ordered software from catalogues that came with the mail.
+    </p><p>
+    I read at that time something about an open operating system in a
+    periodical. It was all quite difficult for me to understand. But the way I
+    understood the article about Linux was very imaginative. I laboured under
+    the illusion that all the sources of the system were accessible in the same
+    way the binaries are accessible on another PC Operating System. In other
+    words, I literally thought there were no more binaries on Linux. However,
+    as I was a 14 year old child, not a prodigy, and only recently learned to
+    use the BASIC programming language, this was my best effort.
+    </p><p>
+    It did, however, take only a few more years until I tried myself on a
+    Linux operating system. I ordered it through mail, of course, and although
+    I can't find any reference on the internet, I'm quite sure the name of the
+    distribution was PTS Linux and it was from Russia. There was a very brief
+    booklet add. I think all was written in German. It covered the very basics;
+    mounting a floppy or CD-ROM (which I managed), setting up X with my monitor
+    (which I did not manage) and recompiling the kernel to support my sound
+    card (which I also did not manage to accomplish).
+    </p><p>
+    For some reason it felt a bit like home. I had always preferred the command
+    line over any graphical interface. So I explored the terminal world of
+    Linux. But I soon got bored of this novelty and I also couldn't find a
+    BASIC interpreter and I was so much more productive with the other
+    Operating System, mainly because I knew how to use it.
+    </p><p>
+    Around 1998 or 1999, I think, I tried Red Hat Linux. It worked much better
+    than the PTS Linux. I was able to do much more now on Linux. But still, I
+    fell back to the other Operating System, maybe because of comfort.
+    </p><p>
+    I got a real fantastic push towards Linux through the help of
+    <a href='https://en.wikipedia.org/wiki/Knoppix'
+       target='_blank'>Knoppix</a> around the year 2000. Sometimes it came
+    bundled with my periodicals. This was an easy way to explore Linux.
+    </p><p>
+    I had my equivalent of a high school diploma rather late in life, when I
+    was 24. On the day I took the oral exam for Mathematics I had my Knoppix
+    prepared to have some programme (which one I can't remember), plot a
+    function on the screen. Unfortunately, it did not work out then and
+    the teacher helped me by drawing the function on the blackboard instead.
+    </p><p>
+    I enjoyed Linux so much, I helped my family set up a computer with it at
+    that time, connected to the internet via a 56k modem.
+    </p>
+    Fast forward to 2005. At that time I managed to get Debian running on my
+    new Notebook. It was one of those Notebooks with a 16:10 ratio screen. The
+    open source radeon driver did not recognize the graphics in my notebook. So
+    I started to look around in the source of the driver and found a file that
+    harboured a lot of strange looking strings. They were the identifications
+    for the many different graphics cards the driver supported. I found the
+    name of my graphics card and then checked the identification and sure
+    enough, it was missing. So I added it, abiding to the patterns I made out.
+    After I had managed to get the driver accept my graphics, I went ahead and
+    mailed the change, in the best way I knew, to the mail address listed in
+    the file I modified. Without much delay I received a reply with a kind
+    message and a thank you.
+    </p><p>
+    And that was it. End of story.
+    </p><p>
+    Well, not quite. I stayed a script kiddie for all my life until today. I
+    learned to use a few other programming languages other then BASIC. I use
+    bash quite a lot. I went even so far as to write a voice recording software
+    with it called <a href='https://github.com/fuzzybritches0/stutterer'
+		      target='_blank'>stutterer</a>. I learned JavaScript just
+    for fun. I know now about Callbacks, Scopes, Chains and Closures and much
+    more. I went on to do most of the web programming stuff on
+    <a href='https://www.freecodecamp.org/'
+       target='_blank'>freecodecamp.org </a> a few years back, in the hope of
+    scoring a job in that direction, but it never happened. I remained most of
+    my professional life a social worker, helping special people live
+    independent as much as possible. But I always remained loyal towards
+    Debian and the Free Software Community.
+    </p><p>
+    Now, with me being a middle aged man in 2021, I dared to make a change from
+    being a script kiddie to Linux kernel developer. And I tell you, it is
+    really, really hard. How do I know, you ask? Simple. I got into the Linux
+    Foundation`s Mentorship Programme. How about that, huh? Yeah. I was almost
+    quite sure I wouldn't make it in. But I tried to master the initial
+    challenges that led up to me being accepted and I was.
+    </p><p>
+    This is a collection of thoughts, scripts and knowledge that shall serve
+    to document my way on becoming a Linux Kernel Developer (or not) and I hope
+    that it will be helpful to others, too, who maybe, like me, have the same
+    difficult path ahead.
+    </p>
+  </section>
+</main>
+</body>
+</html>
