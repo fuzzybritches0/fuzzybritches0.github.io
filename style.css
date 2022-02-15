@@ -11,6 +11,11 @@ a:hover {
   color: lightblue;
 }
 
+.homelink {
+  font-size: 1.3em;
+  color: lightblue;
+}
+
 .prettyprint ol.linenums li {
   list-style-type: decimal;
 }
