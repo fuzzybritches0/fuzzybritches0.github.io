@@ -10,6 +10,7 @@
     <h1>Fixing things since 1981</h1>
   </header>
   <div><a class="homelink" href="https://github.com/fuzzybritches0/">https://github.com/fuzzybritches0/</a></div>
+  <div><a href="#entry_5">Entry 5: About kernel bugs, fidgets and planets</a></div>
   <div><a href="#entry_4">Entry 4: Getting email right</a></div>
   <div><a href="#entry_3">Entry 3: Reproducing syzkaller crashes with automation in mind</a></div>
   <div><a href="#entry_2">Entry 2: Provoke a Kernel Panic</a></div>
@@ -17,6 +18,78 @@
   <div><a href="#entry_0">Entry 0: Introduction</a></div>
 </nav>
 <main>
+  <section class="main-section" id="entry_5">
+    <header>
+      <h1>Entry 5: About kernel bugs, fidgets and planets</h1>
+      <strong>Tuesday, 15 February 2022</strong>
+    </header>
+    <p>
+    The Linux Foundation`s Linux Kernel Mentorship programme now completed for almost a year, I struggled
+    finding a hold in the community. But that's okay. It's not an easy task to fix kernel bugs. Especially
+    when it is not customary for one to read other's code and understand the inner workings of the Linux
+    kernel. I actually kept going after the Mentorship ended; for quite some month. I wanted to feel that
+    satisfaction of having fixed an actual bug in the Linux kernel, no matter how small or trivial. But it
+    didn't want to be that way. There were a lot of use-after-free bugs I looked at, compiled the kernel,
+    tried some code changes, but never fixed one. I maintained my
+    <a href='https://github.com/fuzzybritches0/syzrep' target='_blank'>syzrep</a>
+    scripts over that period of time, too. I ended up automating the whole process with them. But it didn't
+    help with fixing a bug, of course.
+    </p><p>
+    So, after some time of feeling useless I continued my project that was interrupted by the
+    internship (gladly so - I am very happy about having done the internship):
+    </p><p>
+    <img src='https://github.com/fuzzybritches0/solarfidget/raw/main/assets/gifs/solarfidget.gif'></img>
+    <a href='https://github.com/fuzzybritches0/solarfidget' target='_blank'>The Original Solarfidget</a>
+    </p><p>
+    <p>The idea for it came to me quite a few years ago, when so many children and grown-ups used those
+    fidget-spinners. I had one too, of course, but gave up on it very quickly. Why? I hurt myself. Also,
+    when I do need to fidget (which is quite often, really) I use my hair on the left side (mostly) of
+    my head. I curl and curl it around my finger: There is always a curl on the left side of my head
+    sticking out. Now, that I made myself aware of it: I'm doing it right now! But, lets return to
+    those fidget spinners:
+    </p><p>
+    Try this youtube search: <a href='https://www.youtube.com/results?search_query=fidget+spinner+accidents'
+      target='_blank'>youtube: fidget spinner accidents</a>
+    </p><p>
+    Of course my injuries weren't dramatic in any way. Nothing of concern, really. I never overdid it. But
+    it was a nuisance. Also, at the time I had this idea, I still was a social worker and had a client, who
+    used a screw top lid from a milk bottle as a fidget and this gave me the idea for the shape the fidget
+    should have. I had wished the dimenstions would have been the same. But that didn't quite work out since
+    prototyping wouldn't let me go that small.
+    </p><p>
+    First I designed a version with <a href='https://www.adafruit.com/product/1586' target='_blank'>24 LED
+    lights</a> and programmed a good portion of the code on that one. Then I wanted to have a version with
+    a charger station that would also let me programme the fidget from the outside. But the space in the 24
+    LED version was too limited. So I changed it to 36 LED lights and later back to 32 LED lights after I
+    designed a version that uses 3x AAA batteries and was able to spare those extra four LED lights, after
+    a clever design decision and stacking the electronics.
+    </p><p>
+    I then shared my designs on different platforms on the internet:
+    </p><p>
+    <a href='https://makeprojects.com/project/the-original-solarfidget' target='_blank'>Make: Projects - The Original Solarfidget 36 LED version (discontinued)</a>
+    </br>
+    <a href='https://makeprojects.com/project/original-solarfidget---no-batteries-included-edition' target='_blank'>Make: Projects - Original Solarfidget - No batteries included edition</a>
+    </br>
+    <a href='https://makeprojects.com/project/original-solarfidget-lipo-edition' target='_blank'>Make: Projects - Original Solarfidget - LIPO edition</a>
+    </p><p>
+    And here:
+    </p><p>
+    <a href='https://www.instructables.com/The-Original-Solarfidget/' target='_blank'>Instructables - The Original Solarfidget 36 LED version (discontinued)</a>
+    </br>
+    <a href='https://www.instructables.com/ORIGINAL-SOLARFIDGET-NO-BATTERIES-INCLUDED-EDITION/' target='_blank'>Instructables - Original Solarfidget - No batteries included edition</a>
+    </br>
+    <a href='https://www.instructables.com/ORIGINAL-SOLARFIDGET-LIPO-EDITION/' target='_blank'>Instructables - Original Solarfidget - LIPO edition</a>
+    </p><p>
+    When I first uploaded the code, I came up with the idea to play the fidget on different planets in our
+    Solar system, the same way, those body scales in the Science History Museum, in the 1990's, gave you an
+    impression of how much weight you'd have on a different planet by stepping on them and seeing the result
+    displayed on the mechanical scale. You couldn't feel the difference but you sure saw that your weight
+    was more than double on Jupiter and vanishingly small on Pluto. With the Solarfidget you can see the
+    differences in the reaction of the pendulum, with Jupiter and Pluto being the most prominent
+    differences.
+    </p><p>
+    It was fun designing, making and programming this project. I learned a lot of new stuff. 
+  </section>
   <section class="main-section" id="entry_4">
     <header>
       <h1>Entry 4: Getting email right</h1>
@@ -48,7 +121,7 @@
     </p><p>
     I can only advice everyone who, not forced by their employer, to use a
     gmail account or something that behaves like one and git-send-email. Use:
-    <code class="prettyprint">
+    <code>
 $ git send-email --help
     </code>
     and scroll down to 'EXAMPLES'. Right after that it says: 'Use gmail as the
@@ -73,7 +146,7 @@ $ git send-email --help
     will make those scripts more useful.
     </p><p>
     Do:
-    <code class="prettyprint">
+    <code>
 git clone https://github.com/fuzzybritches0/postman
     </code>
     and follow the instructions in the README. Maybe it's helpful to you, too.
@@ -86,6 +159,11 @@ git clone https://github.com/fuzzybritches0/postman
       <h1>Entry 3: Reproducing syzkaller crashes with automation in mind</h1>
       <strong>Thursday, 22 April 2021</strong>
     </header>
+    <p> THIS IS OUTDATED! PLEASE HEAD OVER TO:
+      <a href='https://github.com/fuzzybritches0/syzrep'>
+        https://github.com/fuzzybritches0/syzrep</a>
+    FOR UP-TO-DATE INSTRUCTIONS!
+    </p>
     <p>
     Some crashes I reproduced turned out to share the same .config. Since
     automating this only requires writing a few lines and some testing and the
@@ -96,7 +174,7 @@ git clone https://github.com/fuzzybritches0/postman
     </p><p>
     ############ SETUP ############
     </p>
-    <code class="prettyprint">
+    <code>
 # Let's make sure we are on the same page here, first. Just in case...
 # (Yes, this is all Debian/GNU Linux-based.)
 
@@ -137,7 +215,7 @@ $ wget -O ./files/stretch.img.key https://storage.googleapis.com/syzkaller/stret
     </p><p>
     ############ USAGE ############
     </p>
-    <code class="prettyprint">
+    <code>
 $ cp -R ./files/template './bugs/TITLE-OF-SYZKALLER_BUG'
 
 $ cd './bugs/TITLE-OF-SYZKALLER_BUG'
@@ -146,7 +224,7 @@ $ cd './bugs/TITLE-OF-SYZKALLER_BUG'
     change file syzrep.rc accordingly:
     </p>
     <strong>filename: syzrep.rc</strong>
-    <code class="prettyprint linenums"># Title of syzkaller bug
+    <code class="prettyprint linenums lang-sh"># Title of syzkaller bug
 #https://syzkaller.appspot.com/bug?id=
 #Reported-by: syzbot+xxxxxxxxxxxxxxxxxxxx@syzkaller.appspotmail.com
 
@@ -171,7 +249,7 @@ REPRODUCER_HASH="xxxxxxxxxxxxxx"</code>
     With the 
     <p></p>
     Finally run: 
-    <code class="prettyprint">
+    <code>
 $ ./auto.sh
     </code>
     </p><p>
@@ -190,7 +268,7 @@ $ ./auto.sh
     all. This leaves us with the following procedure after every subsequent
     change we make and testing of our solutions:
     </p>
-    <code class="prettyprint">
+    <code>
 # If you are not in the respective symbolically linked Linux source folder:
 
 $ cd ./linux
@@ -242,7 +320,7 @@ $ ./ssh.sh systemctl poweroff
     the panic. The file in question is: linux/init/main.c. Then, after
     compilation, boot it with qemu and have the output go to stdout.
     </p><p>
-    <code class="prettyprint">
+    <code>
 BUG: kernel NULL pointer dereference, address: 0000000000000000
 #PF: supervisor write access in kernel mode
 #PF: error_code(0x0002) - not-present page
@@ -260,24 +338,24 @@ Kernel Offset: disabled
     When we debugged the module in the last entry, we read an address from a
     special file in sysfs. When we debug an Oops or Panic in the kernel, we
     need to use the System.map file to get our result. We do:
-    <code class="prettyprint">
+    <code>
 $ cat System.map | grep kernel_init_freeable
 ffffffff82c04120 t kernel_init_freeable
     </code>
     Why? Because of that line (the REGISTER for the INSTRUCTION POINTER):
-    <code class="prettyprint">
+    <code>
 RIP: 0010:kernel_init_freeable+0x1fd/0x257
     </code>
     <br>
     We'll use gdb again to pin down the line in the code that caused the Oops.
-    <code class="prettyprint">
+    <code>
 $ gdb vmlinux
 ...
 Reading symbols from vmlinux...
     </code>
     <br>
 We then do:
-    <code class="prettyprint">
+    <code>
 (gdb) disassemble kernel_init_freeable
 
 01 Dump of assembler code for function kernel_init_freeable:
@@ -292,18 +370,18 @@ We then do:
     <br>
     We calculate the offset from the beginning of the function to the Oops
     instruction:
-    <code class="prettyprint">
+    <code>
 $ echo 'obase=16;ibase=16;FFFFFFFF82c04120+1FD' | bc
 
 FFFFFFFF82C0431D
     </code>
     <br>
     We can find this entry on the second page:
-    <code class="prettyprint">
+    <code>
 0xffffffff82c0431d <+509>:      movl   $0x0,0x0
     </code>
     When we select q to quit the disassembled output and then do:
-    <code class="prettyprint">
+    <code class="prettyprint lang-c">
 (gdb) list *0xffffffff82c0431d
 0xffffffff82c0431d is in kernel_init_freeable (init/main.c:1333).
 1328            driver_init();
@@ -354,13 +432,13 @@ FFFFFFFF82C0431D
     Below are two files. Place them in a folder of your choice. Compile a
     Linux kernel and then compile this module against that kernel by doing the
     following:
-    <code class="prettyprint">
+    <code>
 # inside the folder where the two files are, do:
 $ KERNELSOURCE=/to/your/kernel/build make
     </code>
     <br>
     <strong>filename: badmodule.c</strong>
-    <code class="prettyprint linenums">// SPDX-License-Identifier: GPL-2.0-only
+    <code class="prettyprint linenums lang-c">// SPDX-License-Identifier: GPL-2.0-only
 
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -400,7 +478,7 @@ clean:
     <br>
     I suggest you load the kernel using qemu and then load the module you just
     compiled. Upon loading the module dmesg will have the following report:
-    <code class="prettyprint">
+    <code>
 BUG: kernel NULL pointer dereference, address: 0000000000000000
 #PF: supervisor write access in kernel mode
 #PF: error_code(0x0002) - not-present page
@@ -420,14 +498,14 @@ Killed
     this happen. It should be line 8, right? Well, if we inspect the report we
     can't see a line number or anything representing a line number. What we can
     see, though, is the following line:
-    <code class="prettyprint">
+    <code>
 RIP: 0010:init_module+0x13/0x1000 [badmodule]
     </code>
     <br>
     This tells us that the problem occurred at hex address 0x13 and offset
     0x1000. Because it is a module we need another offset, too, one that
     tells us the offset of the module itself in memory. For this we do:
-    <code class="prettyprint">
+    <code class="prettyprint lang-sh">
 $ sudo cat /sys/module/badmodule/sections/.init.text
 0xffffffffc067c000
     </code>
@@ -436,16 +514,16 @@ $ sudo cat /sys/module/badmodule/sections/.init.text
     with gdb momentarily.
     <br>
     Next, we load the failing module into gdb with,
-    <code class="prettyprint">
+    <code>
 $ gdb badmodule.ko
     </code>
     and we are being greeted with a welcome screen and,
-    <code class="prettyprint">
+    <code>
 Reading symbols from badmodule.ko...
 (gdb)
     </code>
 we do now by typing and use the hex address we obtained before:
-    <code class="prettyprint">
+    <code>
 (gdb) add-symbol-file badmodule.o 0xffffffffc067c000
 
 add symbol table from file "badmodule.o" at
@@ -469,26 +547,26 @@ Reading symbols from badmodule.o...
     caused the Oops so we can pin down the instruction in the source file.
     The first address is in line 2 with: 0x000000000000004c, Recalling the
     RIP line:
-    <code class="prettyprint">
+    <code>
     RIP: 0010:init_module+0x13/0x1000 [badmodule]
     </code>
     We assume the first hex number 0x13 is the offset. This leaves us with the
     following arithmetic problem:
     4c+13=?<br>
     doing,
-    <code class="prettyprint">
+    <code class="prettyprint lang-sh">
 echo 'obase=16;ibase=16;4C+13' | bc
     </code>
     we are left with the answer of: 5F. And there it is in line 06
-    <code class="prettyprint">
+    <code>
 06   0x000000000000005f <+19>:  movl   $0x0,0x0
     </code>
     To finally obtain the line that caused the Oops, we type:
-    <code class="prettyprint">
+    <code>
 (gdb) list *0x5f
     </code>
      and get:
-    <code class="prettyprint">
+    <code class="prettyprint lang-c">
 0x5f is in initm (/home/curtm/Documents/linux-kernel-mentees/week01/LINUX-KERNEL-DEBUGGING/badmodule.c:8).
 3       #include <linux/kernel.h>
 4       #include <linux/module.h>
