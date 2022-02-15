@@ -507,7 +507,7 @@ RIP: 0010:init_module+0x13/0x1000 [badmodule]
     This tells us that the problem occurred at hex address 0x13 and offset
     0x1000. Because it is a module we need another offset, too, one that
     tells us the offset of the module itself in memory. For this we do:
-    <code class="prettyprint lang-sh">
+    <code>
 $ sudo cat /sys/module/badmodule/sections/.init.text
 0xffffffffc067c000
     </code>
