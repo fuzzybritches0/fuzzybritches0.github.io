@@ -1,28 +1,53 @@
+body {
+  background-color: black;
+}
+
+a {
+  color: grey;
+  font-weight: bold;
+}
+
+a:hover {
+  color: lightblue;
+}
+
+.prettyprint ol.linenums li {
+  list-style-type: decimal;
+}
+
 code {
+  color: black;
   display: block;
   white-space: pre;
   background-color: lightgray;
   overflow: auto;
+  padding: 1em;
+  padding-top: .5em;
+  padding-bottom: .5em;
+  margin-top: .5em;
+  margin-bottom: .5em;
+  border-radius: .5em;
 }
 
 nav div a {
   font-size: 1.1em;
   text-decoration: none;
-  color: black;
+  color: white;
 }
 
 nav div a:hover {
   color: grey;
+  background-color: lightgray;
 }
 
 nav header {
   margin-left: 1em;
+  color: white;
 }
 
 nav {
   position: relative;
-  top: 1em;
-  bottom: 1em;
+  background-color: black;
 }
 
 section {
@@ -31,7 +56,14 @@ section {
 }
 
 section h1 {
-  background-color: lightgrey;
+  color: black;
+  background-color: grey;
+  padding: 1em;
+  padding-top: .5em;
+  padding-bottom: .5em;
+  margin-top: .5em;
+  margin-bottom: .5em;
+  border-radius: 1em;
 }
 
 @media (min-width: 816px) {
@@ -39,10 +71,11 @@ section h1 {
   nav div {
   margin-bottom: 1em;
   margin-left: 1em;
+  padding-right: 2em;
 }
 
   nav {
-    border-right: solid;
+    font-family: Mono;
     left: 0%;
     position: absolute;
     max-width: 20%;
@@ -51,9 +84,14 @@ section h1 {
     max-height: 100%;
   }
   main {
+    font-family: Mono;
+    color: white;
+    background-color: black;
     position: absolute;
     min-width: 76%;
     max-width: 76%;
-    left: 23%;
+    left: 20%;
+    padding-left: 2%;
+    padding-right: 2%;
   }
 }
