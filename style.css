@@ -1,9 +1,9 @@
 * {
-    font-family: Mono;
-    color: white;
+  font-family: Mono;
 }
 
 body {
+  color: white;
   background-color: black;
 }
 
@@ -16,22 +16,16 @@ a:hover {
   color: lightblue;
 }
 
-.homelink {
-  font-size: 1.2em;
-  color: lightblue;
-}
-
 .prettyprint ol.linenums li {
   background-color: lightgray;
   list-style-type: decimal;
-  color: black;
 }
 
 code {
   color: black;
+  background-color: lightgray;
   display: block;
   white-space: pre;
-  background-color: lightgray;
   overflow: auto;
   padding: 1em;
   padding-top: .5em;
@@ -49,7 +43,6 @@ nav div a {
 
 nav div a:hover {
   color: grey;
-  background-color: lightgray;
 }
 
 nav header {
@@ -82,29 +75,30 @@ section h1 {
   border-radius: 1em;
 }
 
-@media (min-width: 816px) {
+@media (min-width: 800px) {
 
-  nav div {
-  margin-bottom: 1em;
-  margin-left: 1em;
-  padding-right: 2em;
-}
+    nav div {
+      margin-bottom: 1em;
+      margin-left: 1em;
+      padding-right: 2em;
+    }
 
-  nav {
-    font-family: Mono;
-    left: 0%;
-    position: absolute;
-    max-width: 20%;
-    min-width: 20%;
-    height: 100%;
-    max-height: 100%;
-  }
-  main {
-    position: absolute;
-    min-width: 76%;
-    max-width: 76%;
-    left: 20%;
-    padding-left: 2%;
-    padding-right: 2%;
-  }
+    nav {
+      left: 0%;
+      position: absolute;
+      max-width: 20%;
+      min-width: 20%;
+      height: 100%;
+      max-height: 100%;
+    }
+
+    main {
+      position: absolute;
+      min-width: 76%;
+      max-width: 76%;
+      left: 20%;
+      padding-left: 2%;
+      padding-right: 2%;
+    }
+
 }
