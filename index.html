@@ -361,12 +361,12 @@ We then do:
 (gdb) disassemble kernel_init_freeable
 
 01 Dump of assembler code for function kernel_init_freeable:
-02    0xffffffff82c04120 <+0>:  call   0xffffffff81060980 <__fentry__>
-03    0xffffffff82c04125 <+5>:  push   %r13
-04    0xffffffff82c04127 <+7>:  mov    $0xffffffff82ca68e0,%rdi
-05    0xffffffff82c0412e <+14>: push   %r12
-06    0xffffffff82c04130 <+16>: push   %rbp
-07    0xffffffff82c04131 <+17>: push   %rbx
+02    0xffffffff82c04120 &lt+0&gt:  call   0xffffffff81060980 &lt__fentry__&gt
+03    0xffffffff82c04125 &lt+5&gt:  push   %r13
+04    0xffffffff82c04127 &lt+7&gt:  mov    $0xffffffff82ca68e0,%rdi
+05    0xffffffff82c0412e &lt+14&gt: push   %r12
+06    0xffffffff82c04130 &lt+16&gt: push   %rbp
+07    0xffffffff82c04131 &lt+17&gt: push   %rbx
 ....
     </code>
     <br>
@@ -380,7 +380,7 @@ FFFFFFFF82C0431D
     <br>
     We can find this entry on the second page:
     <code>
-0xffffffff82c0431d <+509>:      movl   $0x0,0x0
+0xffffffff82c0431d &lt+509&gt:      movl   $0x0,0x0
     </code>
     When we select q to quit the disassembled output and then do:
     <code class="prettyprint lang-c">
@@ -536,12 +536,12 @@ Reading symbols from badmodule.o...
 (gdb) disassemble init_module
 
 01 Dump of assembler code for function initm:
-02   0x000000000000004c <+0>:   call   0x51 <initm+5>
-03   0x0000000000000051 <+5>:   mov    $0x0,%rdi
-04   0x0000000000000058 <+12>:  call   0x5d <initm+17>
-05   0x000000000000005d <+17>:  xor    %eax,%eax
-06   0x000000000000005f <+19>:  movl   $0x0,0x0
-07   0x000000000000006a <+30>:  ret
+02   0x000000000000004c &lt+0&gt:   call   0x51 &ltinitm+5&gt
+03   0x0000000000000051 &lt+5&gt:   mov    $0x0,%rdi
+04   0x0000000000000058 &lt+12&gt:  call   0x5d &ltinitm+17&gt
+05   0x000000000000005d &lt+17&gt:  xor    %eax,%eax
+06   0x000000000000005f &lt+19&gt:  movl   $0x0,0x0
+07   0x000000000000006a &lt+30&gt:  ret
 08 End of assembler dump.
     </code>
     <br>
@@ -561,7 +561,7 @@ echo 'obase=16;ibase=16;4C+13' | bc
     </code>
     we are left with the answer of: 5F. And there it is in line 06
     <code>
-06   0x000000000000005f <+19>:  movl   $0x0,0x0
+06   0x000000000000005f &lt+19&gt:  movl   $0x0,0x0
     </code>
     To finally obtain the line that caused the Oops, we type:
     <code>
